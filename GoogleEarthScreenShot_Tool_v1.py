@@ -66,14 +66,6 @@ for i in range(50):# capture fifty images
             y_bar[:,:sideB]=0                                   # remove margin
             y_bar[:,1408-sideB:]=0                              # remove margin
 
-            '''#vegetation index
-            R=RGB[:,:,0]
-            G=RGB[:,:,1]
-            B=RGB[:,:,2]
-            VegIndex=2*G-R-B
-            y_bar[VegIndex>0.3]=0
-            '''
-
             xlist=[]
             ylist=[]
             for yi in range (1024):
@@ -94,22 +86,6 @@ for i in range(50):# capture fifty images
                 xlist_predict.append(b0+b1*yi)
                 ylist_predict.append(yi)
 
-            '''
-            try:
-                top=np.where(y_bar[300,200:800]>1000)[0]
-                x1=get_median(top)
-                print(top,x1)
-                #x1=int(np.where(y_bar[300,200:800]>1000)[0][0])
-            except:
-                print('Bridge?')
-            try:
-                bottom=np.where(y_bar[-300,200:800]>1000)[0]
-                x2=get_median(bottom)
-                print(bottom,x2)
-                #x2=int(np.where(y_bar[-300,200:800]>1000)[0][0])
-            except:
-                print('Bridge?')
-            '''
             x1=xlist_predict[0]
             x2=xlist_predict[-1]
             angle=math.atan((x2-x1)/1024)/math.pi*180
