@@ -123,7 +123,7 @@ for i in range(50):# capture fifty images
                 keyboard.release(Key.left)
                 print('left')
                 num_change+=1
-            if num_change>=5:
+            if num_change>5:
                 print('Error!')
                 num_change=0#reset
                 time.sleep(2)
