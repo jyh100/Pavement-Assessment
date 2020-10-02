@@ -3,7 +3,7 @@
 # Copyright:    Yuhan Jiang
 # Email:        yuhan.jiang@marquette.edu
 # Date:         10/01/2020
-# Discriptions : Tracking roadway on Google Earth web (fullscreen on 2nd monitor), 
+# Discriptions : Tracking roadway on Google Earth web (fullscreen on 2nd monitor),
 import math
 import statistics
 from PIL import ImageGrab
@@ -50,6 +50,7 @@ for i in range(50):# capture fifty images
     x_shiftB=15 # x-direction diff. boundary
     sideB=200 #  margin boundary
     num_change=0 # number of changes in each station
+    changeB=15# changes upper boundary
     while abs(angle)>angleB or abs(x_shift)>x_shiftB:
             time.sleep(.5)  # wait to load the map
             image = ImageGrab.grab(all_screens=True)#image = ImageGrab.grab(bbox=(0,0,700,800))
@@ -65,6 +66,14 @@ for i in range(50):# capture fifty images
             y_bar[y_bar<000]=0                                  #remove the negtive value
             y_bar[:,:sideB]=0                                   # remove margin
             y_bar[:,1408-sideB:]=0                              # remove margin
+
+            '''#vegetation index
+            R=RGB[:,:,0]
+            G=RGB[:,:,1]
+            B=RGB[:,:,2]
+            VegIndex=2*G-R-B
+            y_bar[VegIndex>0.3]=0
+            '''
 
             xlist=[]
             ylist=[]
@@ -92,7 +101,7 @@ for i in range(50):# capture fifty images
             x_shift=(x1+x2)/2-1408/2  #
             print(x1,x2,angle,x_shift)
 
-            if abs(angle)>35 or num_change>=5: # change the direction to North head
+            if abs(angle)>35 or num_change>=changeB: # change the direction to North head
                 keyboard.press('n')
                 keyboard.release('n')
                 print('head north')
@@ -123,7 +132,7 @@ for i in range(50):# capture fifty images
                 keyboard.release(Key.left)
                 print('left')
                 num_change+=1
-            if num_change>5:
+            if num_change>changeB:
                 print('Error!')
                 num_change=0#reset
                 time.sleep(2)
