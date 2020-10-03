@@ -54,8 +54,8 @@ for i in range(50):# capture fifty images
     while abs(angle)>angleB or abs(x_shift)>x_shiftB:
             time.sleep(.5)  # wait to load the map
             image = ImageGrab.grab(all_screens=True)#image = ImageGrab.grab(bbox=(0,0,700,800))
-            imShot = image.crop((1920+252, 0, 1920+252+1408, 1024))#remove tool bar areas
-            RGB=np.array(imShot)
+            imOrtho = image.crop((1920+252, 0, 1920+252+1408, 1024))#remove tool bar areas
+            RGB=np.array(imOrtho)
             imGray=cv.cvtColor(RGB,cv.COLOR_RGB2GRAY) # convert to grayscale
             gray_filtered=cv.bilateralFilter(imGray,7,50,50)            # Smooth without removing edges.
             gray_filtered[gray_filtered<25]=255#keep the shade, sealed crack, crack, black vehicels
@@ -139,7 +139,7 @@ for i in range(50):# capture fifty images
 
     if True: # show images
 
-            fig=plt.figure("HighwayASS_Project"+str(i),figsize=(12,6))
+            fig=plt.figure("HighwayASS_Project"+str(i),figsize=(12,4))
             plt.ion()  #turn on interaction mode
             ax1=plt.subplot(1,2,1)
             ax1.imshow(y_bar,cmap='gray')
@@ -147,13 +147,15 @@ for i in range(50):# capture fifty images
             ax2=plt.subplot(1,2,2)
             ax2.plot(xlist_predict,ylist_predict,color='pink',linewidth=5)#update to line with width
             ax2.imshow(gray_filtered,cmap='gray')
+            plt.savefig('D:/CentOS/G1/'+str(i)+'tracking.svg') # save detected y-direction edge and bilateral Filtered image
             plt.pause(1.5)# show image for 1.5 sec plt.show()            time.sleep(2)
             plt.ioff()#turn off interaction mode, avoid
             plt.clf()#clean image
             plt.close(fig)#close window
 
-    imShot.save('D:/CentOS/G/Capture'+str(i)+'.png') # save images
+    imOrtho.save('D:/CentOS/G1/'+str(i)+'Ortho_image.jpg') # save cropped images
+    image.save('D:/CentOS/G1/Capture'+str(i)+'.PNG') # save orginal screenshot images
 
     keyboard.press(Key.up)
-    time.sleep(1.9)#move to next image, 1.8 sec move up about 1024 pixels (scroll up one screen)
+    time.sleep(1.78)#move to next image, about 1.8 sec move up about 1024 pixels (scroll up one screen)
     keyboard.release(Key.up)
