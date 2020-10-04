@@ -84,8 +84,8 @@ for i in range(imgNum):# capture fifty images
             ylist=[]
             for yi in range (1024):
                 try:
-                    top=np.where(y_bar[yi,]>000)[0]#600:800
-                    xi=get_mean(top)
+                    positive_edge=np.where(y_bar[yi,]>000)[0]#600:800
+                    xi=get_mean(positive_edge)
                     xlist.append(int(xi))
                     ylist.append(yi)
                 except:
@@ -167,6 +167,7 @@ for i in range(imgNum):# capture fifty images
 # get GPS.
 import HighwayCrack.ORC_GoogleEarthScreenshotGPS as ORC
 imglist=range(imgNum)
+ORC.add_Py3D_log(file_path,['ID','\t','Camera','\t','Latitude_float','\t','Longitude_float','\n']) # format ID 0, Camera 275, Latitude 43.0606,Longitude -87.9206
 for i in imglist:
     l,string=ORC.ORC_GoogleEarthScreenshotGPS(i,file_path,showResult_bool=1) # l is int list [275, 43,03,38, 87,55,14], string is string list  ['Camera','N_deg','N_min','N_sec','W_deg','W_min','W_sec']
 
