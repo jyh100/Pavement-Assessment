@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 # Copyright:    Yuhan Jiang
 # Email:        yuhan.jiang@marquette.edu
-# Date:         10/01/2020
-# Discriptions : Tracking roadway on Google Earth web (fullscreen on 2nd monitor),
+# Date:         10/03/2020
+# Discriptions : Tracking roadway on Google Earth web (fullscreen on 2nd monitor)
+# Update: Including GPS information
 import math
 import statistics
 from PIL import ImageGrab
@@ -36,6 +37,7 @@ def line_regression(x,y):
     #print('intercept b0 is',b0)
     return b0,b1
 
+#------------------------------------------------------------------------
 keyboard=Controller()
 time.sleep(2)# wait 2 sec to start screensnap, click on 2nd monitor (if used), where the Google Earth web is opened with fullscreen
 keyboard.press('u')# switch to google earth to top-view.
@@ -43,7 +45,10 @@ keyboard.release('u')
 keyboard.press('n')# head to north
 keyboard.release('n')
 
-for i in range(50):# capture fifty images
+file_path='D:/CentOS/G3/' # screenshot saving path
+imgNum=5 # num of screenshot to be captured
+
+for i in range(imgNum):# capture fifty images
     angle=15
     x_shift=100
     angleB=3 #angle diff. boundary
@@ -147,15 +152,25 @@ for i in range(50):# capture fifty images
             ax2=plt.subplot(1,2,2)
             ax2.plot(xlist_predict,ylist_predict,color='pink',linewidth=5)#update to line with width
             ax2.imshow(gray_filtered,cmap='gray')
-            plt.savefig('D:/CentOS/G1/'+str(i)+'tracking.svg') # save detected y-direction edge and bilateral Filtered image
+            plt.savefig(file_path+str(i)+'tracking.svg') # save detected y-direction edge and bilateral Filtered image
             plt.pause(1.5)# show image for 1.5 sec plt.show()            time.sleep(2)
             plt.ioff()#turn off interaction mode, avoid
             plt.clf()#clean image
             plt.close(fig)#close window
 
-    imOrtho.save('D:/CentOS/G1/'+str(i)+'Ortho_image.jpg') # save cropped images
-    image.save('D:/CentOS/G1/Capture'+str(i)+'.PNG') # save orginal screenshot images
+    imOrtho.save(file_path+str(i)+'Ortho_image.jpg') # save cropped images
+    image.save(file_path+'Capture'+str(i)+'.PNG') # save orginal screenshot images
 
     keyboard.press(Key.up)
     time.sleep(1.78)#move to next image, about 1.8 sec move up about 1024 pixels (scroll up one screen)
     keyboard.release(Key.up)
+# get GPS.
+import HighwayCrack.ORC_GoogleEarthScreenshotGPS as ORC
+imglist=range(imgNum)
+for i in imglist:
+    l,string=ORC.ORC_GoogleEarthScreenshotGPS(i,file_path,showResult_bool=1) # l is int list [275, 43,03,38, 87,55,14], string is string list  ['Camera','N_deg','N_min','N_sec','W_deg','W_min','W_sec']
+
+    l_float=[float(le) for le in l ]# Option 1 save GPS coordinate as float
+    Latitude_float=format(l_float[1]+l_float[2]/60+l_float[3]/60/60,'.4f')
+    Longitude_float=format(-(l_float[4]+l_float[5]/60+l_float[6]/60/60),'.4f')
+    ORC.add_Py3D_log(file_path,[str(i),'\t',l[0],'\t',str(Latitude_float),'\t',str(Longitude_float),'\n']) # format ID 0, Camera 275, Latitude 43.0606,Longitude -87.9206
