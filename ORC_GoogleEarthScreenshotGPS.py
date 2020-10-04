@@ -7,7 +7,7 @@
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 import cv2 as cv
-import re
+import re,os
 import matplotlib.pyplot as plt
 
 # read image
@@ -32,7 +32,7 @@ def ORC_GoogleEarthScreenshotGPS(imgName,path,showResult_bool=True):
         part[i]=cv.bilateralFilter(part[i],-1,5,5)
         ret,part[i]=cv.threshold(part[i],160,255,cv.THRESH_BINARY_INV)
 
-        lt=re.sub('[\W_]+','',pytesseract.image_to_string(part[i]))
+        lt=re.sub('[\W_]+','',pytesseract.image_to_string(part[i]))# only keep num
 
         if 'a' in lt:# handel the error 8 be detected as a
             new=""
@@ -51,18 +51,17 @@ def ORC_GoogleEarthScreenshotGPS(imgName,path,showResult_bool=True):
             lt=re.sub('[\W_]+','',pytesseract.image_to_string(imagebackup))
 
             if lt=='' or lt.isdigit()==False:  # check blank and non- number
-                plt.figure("Capture"+str(imgName)+'_'+StringList[i]+'_Err!_'+str(lt))
-                plt.imshow(imagebackup)
+                fig=plt.figure("Capture"+str(imgName)+'_'+StringList[i]+'_Err!_'+str(lt))
+                plt.imshow(partcopy[i])
                 plt.show()
                 lt=input("Err! Please Input the Number in the Figure:")
-                plt.clf()
-                plt.close()
+                #plt.clf()
+                plt.close(fig)
 
         if lt.isdigit():
             letter.append(lt)
         else:
             print("Error")
-
 
             #print("Camera:",letter[0],end='\t')
             #print(letter[1],"°",letter[2],"'",letter[3],'" N',end='\t')
@@ -81,12 +80,33 @@ def ORC_GoogleEarthScreenshotGPS(imgName,path,showResult_bool=True):
             plt.ioff()
             plt.clf()
             plt.close()
+            del ax
     print(str(imgName),'\t',"Camera:",letter[0],end='\t')
     print(letter[1],"°",letter[2],"'",letter[3],'" N',end='\t')
     print(letter[4],"°",letter[5],"'",letter[6],'" W',end='\n')
     return letter,StringList
+
+def add_Py3D_log(glb_file_path,str_data):
+    path_file_name = glb_file_path+'HighwayASS_GPS.txt'
+    if not os.path.exists(path_file_name):
+        with open(path_file_name, "w") as f:
+            print(f)
+    with open(path_file_name, "a") as f:
+        f.writelines(str_data)
 #-----------------
-imglist=range(50)
-path='D:/CentOS/G2/'
-for i in imglist:
-    ORC_GoogleEarthScreenshotGPS(i,path)
+if __name__ == '__main__':
+    imglist=range(50)
+    path='D:/CentOS/G2/'
+    for i in imglist:
+        l,string=ORC_GoogleEarthScreenshotGPS(i,path,showResult_bool=1) # l is int list [275, 43,03,38, 87,55,14], string is string list  ['Camera','N_deg','N_min','N_sec','W_deg','W_min','W_sec']
+
+        l_float=[float(le) for le in l ]# Option 1 save GPS coordinate as float
+        Latitude_float=format(l_float[1]+l_float[2]/60+l_float[3]/60/60,'.4f')
+        Longitude_float=format(-(l_float[4]+l_float[5]/60+l_float[6]/60/60),'.4f')
+        add_Py3D_log(path,[str(i),'\t',l[0],'\t',str(Latitude_float),'\t',str(Longitude_float),'\n']) # format ID 0, Camera 275, Latitude 43.0606,Longitude -87.9206
+
+        #letter=[] # Option 2
+        #for j in range(len(l)):
+        #    letter.append(str(l[j]))
+        #add_Py3D_log(path,[str(i),'\t',letter[0],'\t',letter[1],"°",letter[2],"'",letter[3],'"\tN\t',letter[4],"°",letter[5],"'",letter[6],'"\tW\n']) # format ID 0, Camera 275, Latitude 43°03'38" N,Longitude 87°55'14" W
+        #add_Py3D_log(path,[str(i),'\t',letter[0],'\t',letter[1],"\t",letter[2],"\t",letter[3],'\tN\t',letter[4],"\t",letter[5],"\t",letter[6],'\tW\n'])# format ID 0, Camera 275, Latitude Deg 43 Min 03 Sec38 N, Longitude Deg 87 Min 55 Sec14  W
