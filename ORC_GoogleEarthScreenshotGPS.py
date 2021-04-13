@@ -95,18 +95,21 @@ def add_Py3D_log(glb_file_path,str_data):
         f.writelines(str_data)
 #-----------------
 if __name__ == '__main__':
-    imglist=range(50)
-    path='D:/CentOS/G2/'
+    imglist=range(53)
+    path='D:/CentOS/G3/'
+    option1=False
+    option2=True
     for i in imglist:
         l,string=ORC_GoogleEarthScreenshotGPS(i,path,showResult_bool=1) # l is int list [275, 43,03,38, 87,55,14], string is string list  ['Camera','N_deg','N_min','N_sec','W_deg','W_min','W_sec']
 
-        l_float=[float(le) for le in l ]# Option 1 save GPS coordinate as float
-        Latitude_float=format(l_float[1]+l_float[2]/60+l_float[3]/60/60,'.4f')
-        Longitude_float=format(-(l_float[4]+l_float[5]/60+l_float[6]/60/60),'.4f')
-        add_Py3D_log(path,[str(i),'\t',l[0],'\t',str(Latitude_float),'\t',str(Longitude_float),'\n']) # format ID 0, Camera 275, Latitude 43.0606,Longitude -87.9206
-
-        #letter=[] # Option 2
-        #for j in range(len(l)):
-        #    letter.append(str(l[j]))
-        #add_Py3D_log(path,[str(i),'\t',letter[0],'\t',letter[1],"°",letter[2],"'",letter[3],'"\tN\t',letter[4],"°",letter[5],"'",letter[6],'"\tW\n']) # format ID 0, Camera 275, Latitude 43°03'38" N,Longitude 87°55'14" W
-        #add_Py3D_log(path,[str(i),'\t',letter[0],'\t',letter[1],"\t",letter[2],"\t",letter[3],'\tN\t',letter[4],"\t",letter[5],"\t",letter[6],'\tW\n'])# format ID 0, Camera 275, Latitude Deg 43 Min 03 Sec38 N, Longitude Deg 87 Min 55 Sec14  W
+        if option1==True:
+            l_float=[float(le) for le in l ]# Option 1 save GPS coordinate as float
+            Latitude_float=format(l_float[1]+l_float[2]/60+l_float[3]/60/60,'.4f')
+            Longitude_float=format(-(l_float[4]+l_float[5]/60+l_float[6]/60/60),'.4f')
+            add_Py3D_log(path,[str(i),'\t',l[0],'\t',str(Latitude_float),'\t',str(Longitude_float),'\n']) # format ID 0, Camera 275, Latitude 43.0606,Longitude -87.9206
+        if option2==True:
+            letter=[] # Option 2
+            for j in range(len(l)):
+                letter.append(str(l[j]))
+            #add_Py3D_log(path,[str(i),'\t',letter[0],'\t',letter[1],"°",letter[2],"'",letter[3],'"\tN\t',letter[4],"°",letter[5],"'",letter[6],'"\tW\n']) # format ID 0, Camera 275, Latitude 43°03'38" N,Longitude 87°55'14" W
+            add_Py3D_log(path,[str(i),'\t',letter[0],'\t',letter[1],"\t",letter[2],"\t",letter[3],'\tN\t',letter[4],"\t",letter[5],"\t",letter[6],'\tW\n'])# format ID 0, Camera 275, Latitude Deg 43 Min 03 Sec38 N, Longitude Deg 87 Min 55 Sec14  W
