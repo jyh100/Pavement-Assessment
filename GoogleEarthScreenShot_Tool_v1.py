@@ -45,8 +45,8 @@ keyboard.release('u')
 keyboard.press('n')# head to north
 keyboard.release('n')
 
-file_path='D:/CentOS/G3/' # screenshot saving path
-imgNum=5 # num of screenshot to be captured
+file_path='D:/CentOS/G4/' # screenshot saving path
+imgNum=100 # num of screenshot to be captured
 
 for i in range(imgNum):# capture fifty images
     angle=15
