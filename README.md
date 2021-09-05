@@ -7,6 +7,7 @@ SEE THE GPS-ORC DEMO VIA https://www.yuhanjiang.com/research/IM/PA/GE/ORC
 
 Dataset: https://drive.google.com/file/d/1gLwvOAOWaE8Bhk9wdAItSZ87Jvooas-f/view?usp=sharing
 
+https://doi.org/10.1061/JPEODX.0000282
 @article{doi:10.1061/JPEODX.0000282,
 author = {Yuhan Jiang  and Sisi Han  and Yong Bai },
 title = {Development of a Pavement Evaluation Tool Using Aerial Imagery and Deep Learning},
